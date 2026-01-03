@@ -1,32 +1,28 @@
+/* ---------- Global ---------- */
 * {
     margin: 0;
     padding: 0;
-    font-family: "Plus Jakarta Sans", sans-serif;
     box-sizing: border-box;
+    font-family: "Plus Jakarta Sans", sans-serif;
 }
 
 body {
     background-color: #FFFEFA;
 }
 
-/* ---------- Common Classes ---------- */
+/* ---------- Buttons ---------- */
 .btn {
     background-color: #872BFF;
+    color: white;
     padding: 14px 30px;
     border: 2px solid #872BFF;
     border-radius: 30px;
     font-size: 14px;
     font-weight: bold;
-    color: white;
-    box-shadow: 0 11px 31px 0 #8C8C8C;
     cursor: pointer;
     margin-right: 20px;
-    transition: all .5s;
-}
-
-.btn:hover {
-    background-color: white;
-    color: black;
+    box-shadow: 0 11px 31px 0 #8C8C8C;
+    transition: all 0.5s;
 }
 
 .btn-white {
@@ -34,22 +30,28 @@ body {
     color: black;
 }
 
+.btn:hover {
+    background-color: white;
+    color: #872BFF;
+}
+
+/* ---------- Containers & Headings ---------- */
 .container {
     width: 87.5%;
     margin: 0 auto;
 }
 
 .heading {
-    margin-bottom: 60px;
     text-align: center;
+    margin-bottom: 60px;
 }
 
 .heading h4 {
     font-size: 22px;
-    text-transform: uppercase;
-    letter-spacing: 4px;
     color: #6A14DA;
     font-weight: bold;
+    letter-spacing: 4px;
+    text-transform: uppercase;
     margin-bottom: 20px;
 }
 
@@ -57,49 +59,51 @@ body {
     font-size: 44px;
 }
 
+/* ---------- Hover Effect (Cards, Projects, Brands, Footer Icons) ---------- */
+.card, .project-card, .brands, .imgs, .contact-details a {
+    transition: transform 0.3s ease, box-shadow 0.3s ease, color 0.3s ease;
+}
+
+.card:hover, .project-card:hover, .brands:hover, .imgs:hover, .contact-details a:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+}
+
+/* ---------- Cards ---------- */
 .card-box {
     display: flex;
     justify-content: space-between;
     gap: 30px;
     margin-bottom: 60px;
+    flex-wrap: wrap;
 }
 
 .card {
-    background-color: white;
+    background: white;
     padding: 40px;
     text-align: center;
     width: 320px;
-    box-shadow: 0 4px 4px #00000025;
     border-radius: 16px;
+    box-shadow: 0 4px 4px rgba(0,0,0,0.15);
 }
 
 .card * {
     margin-bottom: 20px;
 }
 
-.card h3 {
-    font-size: 22px;
-    font-weight: bolder;
-}
+.card h3 { font-size: 22px; font-weight: bolder; }
+.card p { font-size: 16px; color: #0D1321; }
+.card a { color: black; font-weight: bold; }
 
-.card p {
-    font-size: 16px;
-    color: #0D1321;
-}
-
-.card a {
-    color: black;
-    font-weight: bold;
-}
-
+/* ---------- Project Cards ---------- */
 .project-card {
-    padding: 48px;
-    background-color: #FFFFFF;
-    border: 1px solid #872BFF;
-    border-radius: 20px;
     display: flex;
     gap: 20px;
     align-items: center;
+    padding: 48px;
+    border: 1px solid #872BFF;
+    border-radius: 20px;
+    background: white;
     margin-bottom: 60px;
 }
 
@@ -108,41 +112,30 @@ body {
     border-radius: 20px;
 }
 
-.project-content h3 {
-    font-size: 30px;
-}
+.project-content h3 { font-size: 30px; }
+.project-content p { color: #0E0E0E70; }
+.project-content * { margin-bottom: 20px; }
 
-.project-content p {
-    color: #0E0E0E70;
-}
-
-.project-content * {
-    margin-bottom: 20px;
-}
-
+/* ---------- Brands ---------- */
 .brands {
     padding: 40px;
-    background-color: white;
-    box-shadow: 0 4px 4px #00000025;
+    background: white;
     border-radius: 16px;
-}
-
-.hidden {
-    display: none;
+    box-shadow: 0 4px 4px rgba(0,0,0,0.15);
 }
 
 /* ---------- Hero Section ---------- */
 #hero {
     margin-bottom: 150px;
     padding-top: 20px;
-    background: url("image/Hero-bg.png");
+    background: url("image/Hero-bg.png") no-repeat;
     background-size: 500px;
 }
 
 #hero-container {
     display: flex;
-    align-items: end;
     justify-content: space-between;
+    align-items: flex-end;
     gap: 40px;
     width: 87.5%;
     margin: 0 auto;
@@ -158,9 +151,7 @@ body {
     margin-bottom: 30px;
 }
 
-#hero-content h1 span {
-    color: #872BFF;
-}
+#hero-content h1 span { color: #872BFF; }
 
 #hero-content p {
     font-size: 16px;
@@ -175,9 +166,8 @@ body {
     vertical-align: middle;
 }
 
-#skill,
-#projects,
-#experience {
+/* ---------- Sections ---------- */
+#skill, #projects, #experience {
     margin-bottom: 150px;
 }
 
@@ -194,16 +184,228 @@ body {
 }
 
 /* ---------- Footer ---------- */
-.footer-container {
-    width: 100%;
+/* .containerss {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 50px;
+    border-top: 1px solid black;
+    flex-wrap: wrap;
+    gap: 20px;
 }
 
+.texts p {
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.imgs-container {
+    display: flex;
+    gap: 15px;
+}
+
+.imgs img {
+    width: 30px;
+    height: 30px;
+    object-fit: contain;
+    cursor: pointer;
+} */
+
+
+/* ---------- Global ---------- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Plus Jakarta Sans", sans-serif;
+}
+
+body {
+    background-color: #FFFEFA;
+}
+
+/* ---------- Buttons ---------- */
+.btn {
+    background-color: #872BFF;
+    color: white;
+    padding: 14px 30px;
+    border: 2px solid #872BFF;
+    border-radius: 30px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-right: 20px;
+    box-shadow: 0 11px 31px 0 #8C8C8C;
+    transition: all 0.5s;
+}
+
+.btn-white {
+    background-color: white;
+    color: black;
+}
+
+.btn:hover {
+    background-color: white;
+    color: #872BFF;
+}
+
+/* ---------- Containers & Headings ---------- */
+.container {
+    width: 87.5%;
+    margin: 0 auto;
+}
+
+.heading {
+    text-align: center;
+    margin-bottom: 60px;
+}
+
+.heading h4 {
+    font-size: 22px;
+    color: #6A14DA;
+    font-weight: bold;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+}
+
+.heading h2 {
+    font-size: 44px;
+}
+
+/* ---------- Hover Effect (Cards, Projects, Brands, Footer Icons) ---------- */
+.card, .project-card, .brands, .imgs, .contact-details a {
+    transition: transform 0.3s ease, box-shadow 0.3s ease, color 0.3s ease;
+}
+
+.card:hover, .project-card:hover, .brands:hover, .imgs:hover, .contact-details a:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+}
+
+/* ---------- Cards ---------- */
+.card-box {
+    display: flex;
+    justify-content: space-between;
+    gap: 30px;
+    margin-bottom: 60px;
+    flex-wrap: wrap;
+}
+
+.card {
+    background: white;
+    padding: 40px;
+    text-align: center;
+    width: 320px;
+    border-radius: 16px;
+    box-shadow: 0 4px 4px rgba(0,0,0,0.15);
+}
+
+.card * {
+    margin-bottom: 20px;
+}
+
+.card h3 { font-size: 22px; font-weight: bolder; }
+.card p { font-size: 16px; color: #0D1321; }
+.card a { color: black; font-weight: bold; }
+
+/* ---------- Project Cards ---------- */
+.project-card {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    padding: 48px;
+    border: 1px solid #872BFF;
+    border-radius: 20px;
+    background: white;
+    margin-bottom: 60px;
+}
+
+.project-img img {
+    width: 400px;
+    border-radius: 20px;
+}
+
+.project-content h3 { font-size: 30px; }
+.project-content p { color: #0E0E0E70; }
+.project-content * { margin-bottom: 20px; }
+
+/* ---------- Brands ---------- */
+.brands {
+    padding: 40px;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 4px rgba(0,0,0,0.15);
+}
+
+/* ---------- Hero Section ---------- */
+#hero {
+    margin-bottom: 150px;
+    padding-top: 20px;
+    background: url("image/Hero-bg.png") no-repeat;
+    background-size: 500px;
+}
+
+#hero-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 40px;
+    width: 87.5%;
+    margin: 0 auto;
+    padding-right: 20px;
+}
+
+#hero-content {
+    padding-bottom: 100px;
+}
+
+#hero-content h1 {
+    font-size: 48px;
+    margin-bottom: 30px;
+}
+
+#hero-content h1 span { color: #872BFF; }
+
+#hero-content p {
+    font-size: 16px;
+    color: #8A8A8A;
+    font-weight: 500;
+    line-height: 26px;
+    margin-bottom: 30px;
+}
+
+#hero-image img {
+    width: 500px;
+    vertical-align: middle;
+}
+
+/* ---------- Sections ---------- */
+#skill, #projects, #experience {
+    margin-bottom: 150px;
+}
+
+.company-card {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    flex-wrap: wrap;
+}
+
+.btn-container {
+    text-align: center;
+    padding: 60px 0;
+}
+
+/* ---------- Footer ---------- */
 .containerss {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 20px 50px;
     border-top: 1px solid black;
+    flex-wrap: wrap;
+    gap: 20px;
 }
 
 .texts p {
@@ -224,129 +426,82 @@ body {
 }
 
 /* ---------- Responsive ---------- */
-
-/* Laptop (1025–1200px) */
 @media screen and (max-width: 1200px) {
-    #hero-content h1 {
-        font-size: 32px;
-    }
-
-    .hero-btn {
-        display: flex;
-        flex-direction: column;
-        gap: 20px;
-    }
-
-    #hero-content p {
-        font-size: 14px;
-    }
+    #hero-content h1 { font-size: 32px; }
+    .hero-btn { display: flex; flex-direction: column; gap: 20px; }
+    #hero-content p { font-size: 14px; }
 }
 
-/* Tablet (769–1024px) */
 @media screen and (max-width: 1024px) {
-    #hero-container {
-        flex-direction: column;
-        text-align: center;
-        align-items: center;
-    }
-
-    .hero-btn {
-        flex-direction: row;
-        justify-content: center;
-    }
-
-    #hero-content {
-        padding-bottom: 0;
-    }
-
-    #hero-image img {
-        width: 100%;
-        max-width: 320px;
-        vertical-align: middle;
-    }
-
-    /* Skills */
-    .card-box {
-        flex-direction: column;
-    }
-
-    .card {
-        width: 100%;
-    }
-
-    /* Projects */
-    .project-img img {
-        width: 250px;
-        border-radius: 20px;
-    }
-
-    .project-content * {
-        margin-bottom: 10px;
-    }
-
+    #hero-container { flex-direction: column; align-items: center; text-align: center; }
+    .hero-btn { flex-direction: row; justify-content: center; }
+    #hero-content { padding-bottom: 0; }
+    #hero-image img { width: 100%; max-width: 320px; }
+    .card-box { flex-direction: column; }
+    .card { width: 100%; }
+    .project-img img { width: 250px; }
+    .project-content * { margin-bottom: 10px; }
 }
 
-/* Mobile Landscape (569–768px) */
 @media screen and (max-width: 768px) {
-    .heading h2 {
-        font-size: 32px;
-    }
-
-    /* project */
-    .project-card {
-        flex-direction: column;
-
-    }
-
-    .project-img img {
-        width: 100%;
-        border-radius: 20px;
-    }
+    .heading h2 { font-size: 32px; }
+    .project-card { flex-direction: column; }
+    .project-img img { width: 100%; }
 }
 
-/* Mobile Portrait (≤568px) */
-@media screen and (max-width: 568px) { 
-    .container {
-        width: 98%;
-    }
+@media screen and (max-width: 568px) {
+    .container { width: 98%; }
+    #hero-container { padding: 0; }
+    .btn { margin-right: 0; }
+    #hero-image img { width: 100%; }
+    .hero-btn { flex-direction: column; gap: 20px; }
+    .heading h2 { font-size: 20px; }
+    .project-card { padding: 10px; }
+    .project-content { text-align: center; }
+    .company-card { flex-direction: column; }
+    .company-card img { width: 100%; max-width: 150px; }
+}
 
-    #hero-container {
-        padding: 0;
-    }
 
-    .btn {
-        margin-right: 0;
-    }
 
-    #hero-image img {
-        width: 100%;
-    }
 
-    .hero-btn {
-        flex-direction: column;
-        gap: 20px;
-    }
 
-    .heading h2 {
-        font-size: 20px;
-    }
 
-    .project-card {
-        padding: 10px;
-    }
 
-    .project-content {
-        text-align: center;
-    }
 
-    /* Experience */
-    .company-card {
-        flex-direction: column;
-    }
+/* ---------- Responsive ---------- */
+@media screen and (max-width: 1200px) {
+    #hero-content h1 { font-size: 32px; }
+    .hero-btn { display: flex; flex-direction: column; gap: 20px; }
+    #hero-content p { font-size: 14px; }
+}
 
-    .company-card img {
-        max-width: 150px;
-        width: 100%;
-    }
+@media screen and (max-width: 1024px) {
+    #hero-container { flex-direction: column; align-items: center; text-align: center; }
+    .hero-btn { flex-direction: row; justify-content: center; }
+    #hero-content { padding-bottom: 0; }
+    #hero-image img { width: 100%; max-width: 320px; }
+    .card-box { flex-direction: column; }
+    .card { width: 100%; }
+    .project-img img { width: 250px; }
+    .project-content * { margin-bottom: 10px; }
+}
 
+@media screen and (max-width: 768px) {
+    .heading h2 { font-size: 32px; }
+    .project-card { flex-direction: column; }
+    .project-img img { width: 100%; }
+}
+
+@media screen and (max-width: 568px) {
+    .container { width: 98%; }
+    #hero-container { padding: 0; }
+    .btn { margin-right: 0; }
+    #hero-image img { width: 100%; }
+    .hero-btn { flex-direction: column; gap: 20px; }
+    .heading h2 { font-size: 20px; }
+    .project-card { padding: 10px; }
+    .project-content { text-align: center; }
+    .company-card { flex-direction: column; }
+    .company-card img { width: 100%; max-width: 150px; }
 }
