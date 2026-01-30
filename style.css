@@ -179,7 +179,7 @@ body {
     margin-bottom: 150px;
     padding-top: 120px; /* compensate navbar height */
     background: url("image/Hero-bg.png") no-repeat;
-    background-size: 500px;
+    background-size: cover;
 }
 
 #hero-container {
