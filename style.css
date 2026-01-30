@@ -59,221 +59,57 @@ body {
     font-size: 44px;
 }
 
-/* ---------- Hover Effect (Cards, Projects, Brands, Footer Icons) ---------- */
-.card, .project-card, .brands, .imgs, .contact-details a {
-    transition: transform 0.3s ease, box-shadow 0.3s ease, color 0.3s ease;
+/* ---------- Navbar ---------- */
+#navbar {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    z-index: 999;
+    transition: box-shadow 0.3s ease, background 0.3s ease;
 }
 
-.card:hover, .project-card:hover, .brands:hover, .imgs:hover, .contact-details a:hover {
-    transform: scale(1.05);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+.nav-scrolled {
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
 }
 
-/* ---------- Cards ---------- */
-.card-box {
-    display: flex;
-    justify-content: space-between;
-    gap: 30px;
-    margin-bottom: 60px;
-    flex-wrap: wrap;
-}
-
-.card {
-    background: white;
-    padding: 40px;
-    text-align: center;
-    width: 320px;
-    border-radius: 16px;
-    box-shadow: 0 4px 4px rgba(0,0,0,0.15);
-}
-
-.card * {
-    margin-bottom: 20px;
-}
-
-.card h3 { font-size: 22px; font-weight: bolder; }
-.card p { font-size: 16px; color: #0D1321; }
-.card a { color: black; font-weight: bold; }
-
-/* ---------- Project Cards ---------- */
-.project-card {
-    display: flex;
-    gap: 20px;
-    align-items: center;
-    padding: 48px;
-    border: 1px solid #872BFF;
-    border-radius: 20px;
-    background: white;
-    margin-bottom: 60px;
-}
-
-.project-img img {
-    width: 400px;
-    border-radius: 20px;
-}
-
-.project-content h3 { font-size: 30px; }
-.project-content p { color: #0E0E0E70; }
-.project-content * { margin-bottom: 20px; }
-
-/* ---------- Brands ---------- */
-.brands {
-    padding: 40px;
-    background: white;
-    border-radius: 16px;
-    box-shadow: 0 4px 4px rgba(0,0,0,0.15);
-}
-
-/* ---------- Hero Section ---------- */
-#hero {
-    margin-bottom: 150px;
-    padding-top: 20px;
-    background: url("image/Hero-bg.png") no-repeat;
-    background-size: 500px;
-}
-
-#hero-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    gap: 40px;
+.nav-container {
     width: 87.5%;
-    margin: 0 auto;
-    padding-right: 20px;
-}
-
-#hero-content {
-    padding-bottom: 100px;
-}
-
-#hero-content h1 {
-    font-size: 48px;
-    margin-bottom: 30px;
-}
-
-#hero-content h1 span { color: #872BFF; }
-
-#hero-content p {
-    font-size: 16px;
-    color: #8A8A8A;
-    font-weight: 500;
-    line-height: 26px;
-    margin-bottom: 30px;
-}
-
-#hero-image img {
-    width: 500px;
-    vertical-align: middle;
-}
-
-/* ---------- Sections ---------- */
-#skill, #projects, #experience {
-    margin-bottom: 150px;
-}
-
-.company-card {
-    display: flex;
-    justify-content: center;
-    gap: 40px;
-    flex-wrap: wrap;
-}
-
-.btn-container {
-    text-align: center;
-    padding: 60px 0;
-}
-
-/* ---------- Footer ---------- */
-/* .containerss {
+    margin: auto;
+    padding: 18px 0;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px 50px;
-    border-top: 1px solid black;
-    flex-wrap: wrap;
-    gap: 20px;
 }
 
-.texts p {
-    font-size: 16px;
-    font-weight: 500;
-}
-
-.imgs-container {
+.nav-links {
+    list-style: none;
     display: flex;
-    gap: 15px;
+    gap: 25px;
 }
 
-.imgs img {
-    width: 30px;
-    height: 30px;
-    object-fit: contain;
-    cursor: pointer;
-} */
-
-
-/* ---------- Global ---------- */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: "Plus Jakarta Sans", sans-serif;
+.nav-links a {
+    text-decoration: none;
+    font-weight: 600;
+    color: #222;
+    transition: color 0.3s;
 }
 
-body {
-    background-color: #FFFEFA;
-}
-
-/* ---------- Buttons ---------- */
-.btn {
-    background-color: #872BFF;
-    color: white;
-    padding: 14px 30px;
-    border: 2px solid #872BFF;
-    border-radius: 30px;
-    font-size: 14px;
-    font-weight: bold;
-    cursor: pointer;
-    margin-right: 20px;
-    box-shadow: 0 11px 31px 0 #8C8C8C;
-    transition: all 0.5s;
-}
-
-.btn-white {
-    background-color: white;
-    color: black;
-}
-
-.btn:hover {
-    background-color: white;
+.nav-links a:hover {
     color: #872BFF;
 }
 
-/* ---------- Containers & Headings ---------- */
-.container {
-    width: 87.5%;
-    margin: 0 auto;
-}
-
-.heading {
-    text-align: center;
-    margin-bottom: 60px;
-}
-
-.heading h4 {
-    font-size: 22px;
-    color: #6A14DA;
+.brand-name {
     font-weight: bold;
-    letter-spacing: 4px;
-    text-transform: uppercase;
-    margin-bottom: 20px;
+    font-size: 20px;
 }
 
-.heading h2 {
-    font-size: 44px;
+.brand-name span {
+    color: #872BFF;
 }
 
-/* ---------- Hover Effect (Cards, Projects, Brands, Footer Icons) ---------- */
+/* ---------- Hover Effects ---------- */
 .card, .project-card, .brands, .imgs, .contact-details a {
     transition: transform 0.3s ease, box-shadow 0.3s ease, color 0.3s ease;
 }
@@ -341,7 +177,7 @@ body {
 /* ---------- Hero Section ---------- */
 #hero {
     margin-bottom: 150px;
-    padding-top: 20px;
+    padding-top: 120px; /* compensate navbar height */
     background: url("image/Hero-bg.png") no-repeat;
     background-size: 500px;
 }
@@ -357,6 +193,7 @@ body {
 }
 
 #hero-content {
+    flex: 1;
     padding-bottom: 100px;
 }
 
@@ -375,9 +212,14 @@ body {
     margin-bottom: 30px;
 }
 
+#hero-image {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+}
+
 #hero-image img {
     width: 500px;
-    vertical-align: middle;
 }
 
 /* ---------- Sections ---------- */
@@ -397,10 +239,11 @@ body {
     padding: 60px 0;
 }
 
-
 /* ---------- Footer ---------- */
 .footer-container {
-    background: #ffffff;
+    background: linear-gradient(135deg, #f7f2ff, #ffffff);
+    box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.05);
+    padding: 40px 0;
 }
 
 .containerss {
@@ -410,14 +253,6 @@ body {
     border-top: 1px solid #ddd;
     display: flex;
     flex-wrap: wrap;
-    gap: 20px;
-}
-
-.contact-info {
-    flex: 1;
-    min-width: 300px;
-    display: flex;
-    flex-direction: column;
     gap: 20px;
 }
 
@@ -432,7 +267,7 @@ body {
     align-items: center;
     font-size: 15px;
     color: #222;
-    transition: transform 0.3s ease;
+    transition: transform 0.3s ease, color 0.3s ease;
 }
 
 .contact-details img {
@@ -448,9 +283,9 @@ body {
     text-decoration: none;
     margin-left: 4px;
     font-weight: 500;
+    transition: color 0.3s ease;
 }
 
-/* Hover Effects */
 .contact-details p:hover {
     transform: translateX(5px);
 }
@@ -461,33 +296,7 @@ body {
 
 .contact-details a:hover {
     text-decoration: underline;
-}
-
-/* ---------- Responsive Design ---------- */
-@media screen and (max-width: 1024px) {
-    .containerss {
-        flex-direction: column;
-        padding: 20px;
-    }
-
-    .contact-info {
-        align-items: center;
-    }
-
-    .contact-details {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .contact-details p {
-        text-align: left;
-    }
-}
-
-@media screen and (max-width: 768px) {
-    .contact-details p {
-        font-size: 14px;
-    }
+    color: #5A1DBF;
 }
 
 /* ---------- Responsive ---------- */
@@ -506,56 +315,15 @@ body {
     .card { width: 100%; }
     .project-img img { width: 250px; }
     .project-content * { margin-bottom: 10px; }
+    .containerss { flex-direction: column; padding: 20px; }
+    .contact-details { flex-direction: column; align-items: flex-start; }
 }
 
 @media screen and (max-width: 768px) {
     .heading h2 { font-size: 32px; }
     .project-card { flex-direction: column; }
     .project-img img { width: 100%; }
-}
-
-@media screen and (max-width: 568px) {
-    .container { width: 98%; }
-    #hero-container { padding: 0; }
-    .btn { margin-right: 0; }
-    #hero-image img { width: 100%; }
-    .hero-btn { flex-direction: column; gap: 20px; }
-    .heading h2 { font-size: 20px; }
-    .project-card { padding: 10px; }
-    .project-content { text-align: center; }
-    .company-card { flex-direction: column; }
-    .company-card img { width: 100%; max-width: 150px; }
-}
-
-
-
-
-
-
-
-
-/* ---------- Responsive ---------- */
-@media screen and (max-width: 1200px) {
-    #hero-content h1 { font-size: 32px; }
-    .hero-btn { display: flex; flex-direction: column; gap: 20px; }
-    #hero-content p { font-size: 14px; }
-}
-
-@media screen and (max-width: 1024px) {
-    #hero-container { flex-direction: column; align-items: center; text-align: center; }
-    .hero-btn { flex-direction: row; justify-content: center; }
-    #hero-content { padding-bottom: 0; }
-    #hero-image img { width: 100%; max-width: 320px; }
-    .card-box { flex-direction: column; }
-    .card { width: 100%; }
-    .project-img img { width: 250px; }
-    .project-content * { margin-bottom: 10px; }
-}
-
-@media screen and (max-width: 768px) {
-    .heading h2 { font-size: 32px; }
-    .project-card { flex-direction: column; }
-    .project-img img { width: 100%; }
+    .contact-details p { font-size: 14px; }
 }
 
 @media screen and (max-width: 568px) {
