@@ -5,12 +5,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Portfolio</title>
-    <link rel="icon" href="/image/logo.jpg">
+    <link rel="icon" href="image/logo.jpg">
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap"
+        rel="stylesheet">
 
     <!-- CSS -->
     <link rel="stylesheet" href="style.css">
@@ -23,6 +24,8 @@
     <!-- Navbar -->
     <nav id="navbar">
         <div class="nav-container">
+            <div class="brand-name">M. <span>Tamim Hasan</span></div>
+            <!-- <div id="menu-toggle">&#9776;</div> -->
             <ul class="nav-links">
                 <li><a href="#hero">Home</a></li>
                 <li><a href="#skill">Skills</a></li>
@@ -30,26 +33,23 @@
                 <li><a href="#experience">Experience</a></li>
                 <li><a href="#footer">Contact</a></li>
             </ul>
-
-            <div class="brand-name">
-                M. <span>Tamim Hasan</span>
-            </div>
         </div>
     </nav>
 
     <!-- Hero Section -->
     <section id="hero">
-        <div class="container">
+        <div class="container hero-container">
             <div id="hero-content">
                 <h1>Front-End Developer <span>Crafting</span> Modern Web Experiences</h1>
-                <p>Passionate Front-End web developer with experience in designing and developing dynamic websites and applications.</p>
+                <p>Passionate Front-End web developer with experience in designing and developing dynamic websites and
+                    applications.</p>
                 <div class="hero-btn">
                     <button class="btn">Explore Works</button>
                     <button class="btn btn-white">Download CV</button>
                 </div>
             </div>
             <div id="hero-image">
-                <img src="image/me.png" alt="Tamim Hasan">
+                <img src="./image/me-2.png" alt="Tamim Hasan">
             </div>
         </div>
     </section>
@@ -66,42 +66,41 @@
                 <div class="card">
                     <img src="image/html.png" alt="HTML 5">
                     <h3>HTML 5</h3>
-                    <p>HTML stands for HyperText Markup Language. It structures web pages with headings, paragraphs, images, links, and forms.</p>
-                    <a href="">Explore work</a>
+                    <p>HTML structures web pages with headings, paragraphs, images, links, and forms.</p>
+                    <a href="#">Explore work</a>
                 </div>
                 <div class="card">
                     <img src="image/css.png" alt="CSS 3">
                     <h3>CSS 3</h3>
-                    <p>CSS is used to design and style web pages by controlling layout, colors, fonts, spacing, responsiveness, and animations.</p>
-                    <a href="">Explore work</a>
+                    <p>CSS designs and styles web pages using layouts, colors, fonts, spacing, and animations.</p>
+                    <a href="#">Explore work</a>
                 </div>
                 <div class="card">
                     <img src="image/js.png" alt="JavaScript">
                     <h3>JavaScript (ES6)</h3>
-                    <p>JavaScript is a programming language to create interactive web applications. ES6 adds modern features like arrow functions, modules, and async programming.</p>
-                    <a href="">Explore work</a>
+                    <p>JS adds interactivity to web pages with modern ES6 features like modules and arrow functions.</p>
+                    <a href="#">Explore work</a>
                 </div>
             </div>
 
-            <!-- More cards like React, Next.js, Material UI, TypeScript, Redux, Socket -->
             <div class="card-box">
                 <div class="card">
                     <img src="image/react.png" alt="React">
                     <h3>React (19+)</h3>
-                    <p>React is a JavaScript library for building fast and reusable user interfaces using components and virtual DOM.</p>
-                    <a href="">Explore work</a>
+                    <p>React builds reusable UI components using virtual DOM for fast performance.</p>
+                    <a href="#">Explore work</a>
                 </div>
                 <div class="card">
                     <img src="image/next.png" alt="Next JS">
                     <h3>Next JS (15+)</h3>
-                    <p>Next.js enables server-side rendering, static site generation, and optimized performance for modern web apps.</p>
-                    <a href="">Explore work</a>
+                    <p>Next.js enables server-side rendering, static site generation, and optimized web apps.</p>
+                    <a href="#">Explore work</a>
                 </div>
                 <div class="card">
                     <img src="image/mui.png" alt="Material UI">
                     <h3>Material UI</h3>
-                    <p>Material UI is a React component library that follows Google’s Material Design principles.</p>
-                    <a href="">Explore work</a>
+                    <p>Material UI is a React library following Google’s Material Design for components.</p>
+                    <a href="#">Explore work</a>
                 </div>
             </div>
 
@@ -109,24 +108,33 @@
                 <div class="card">
                     <img src="image/typescript.png" alt="TypeScript">
                     <h3>TypeScript</h3>
-                    <p>TypeScript is a strongly typed superset of JavaScript that catches errors during development.</p>
-                    <a href="">Explore work</a>
+                    <p>TypeScript adds strong typing to JavaScript to prevent errors during development.</p>
+                    <a href="#">Explore work</a>
                 </div>
                 <div class="card">
                     <img src="image/redux.png" alt="Redux">
                     <h3>Redux</h3>
-                    <p>Redux manages and centralizes application state in large-scale React apps with predictable data flow.</p>
-                    <a href="">Explore work</a>
+                    <p>Redux centralizes state in React apps with predictable data flow.</p>
+                    <a href="#">Explore work</a>
                 </div>
                 <div class="card">
                     <img src="image/socket.png" alt="Socket">
                     <h3>Socket</h3>
-                    <p>Socket enables real-time bidirectional communication between client and server, used in chats and live data updates.</p>
-                    <a href="">Explore work</a>
+                    <p>Socket enables real-time bidirectional communication between client and server.</p>
+                    <a href="#">Explore work</a>
                 </div>
             </div>
         </div>
+
+
     </section>
+
+
+    <div style="display: flex; justify-content: center;  margin-bottom: 50px;">
+        <a href="./Skill.html"><button class="btn">Learn Skill Site</button></a>
+    </div>
+
+
 
     <!-- Projects Section -->
     <section id="projects">
@@ -139,36 +147,34 @@
             <div class="project-box">
                 <div class="project-card">
                     <div class="project-img">
-                        <img src="image/project-doctoriano.png" alt="Doctoriano Project">
+                        <img src="image/gemini-3-pro-image-preview_a__একটি_আধুনিক,_পেশাদা.png" alt="Doctoriano Project">
                     </div>
                     <div class="project-content">
-                        <h3>Doctoriano</h3>
-                        <p>June 2025 - November 2025</p>
-                        <p>Healthcare platform connecting patients and doctors with appointment booking and consultations.</p>
-                        <button class="btn">Download App</button>
+                        <h3> Bank loan</h3>
+                        <p>Sure! How about: "A user-friendly app that simplifies the loan application process with quick
+                            approvals and transparent terms." Let me know if you'd like any tweaks!</p>
+                      <a href="https://github.com/tamimhasanbd06/mortgage-calculator" target="_blank"><button class="btn">See this project</button></a>
+
                     </div>
                 </div>
-
                 <div class="project-card">
                     <div class="project-img">
-                        <img src="image/project-ieltstar.png" alt="Ieltstar Project">
+                        <img src="image/gemini-3-pro-image-preview_a__Create_a_high-quali.png" alt="Ieltstar Project">
                     </div>
                     <div class="project-content">
-                        <h3>Ieltstar</h3>
-                        <p>June 2025 - November 2025</p>
-                        <p>Educational platform for IELTS preparation with tests, resources, and performance tracking.</p>
-                        <button class="btn">Download App</button>
+                        <h3> Agency website</h3>
+                        <p>Our agency’s services will make your journey much easier and more productive.</p>
+                         <a href="https://github.com/tamimhasanbd06/agency-website" target="_blank"><button class="btn">See this project</button></a>
+
                     </div>
                 </div>
-
                 <div class="project-card">
                     <div class="project-img">
                         <img src="image/project-mewopay.png" alt="Mewopay Project">
                     </div>
                     <div class="project-content">
                         <h3>Mewopay</h3>
-                        <p>June 2025 - November 2025</p>
-                        <p>Digital payment solution with wallet management and secure online transactions.</p>
+                        <p>Digital payment solution with wallet management and secure transactions.</p>
                         <button class="btn">Download App</button>
                     </div>
                 </div>
@@ -190,8 +196,6 @@
                 <div class="brands"><img src="image/brands-3.png" alt="Brand 3"></div>
                 <div class="brands"><img src="image/brands-4.png" alt="Brand 4"></div>
                 <div class="brands"><img src="image/brands-5.png" alt="Brand 5"></div>
-                <div class="brands"><img src="image/brands-6.png" alt="Brand 6"></div>
-                <div class="brands"><img src="image/brands-7.png" alt="Brand 7"></div>
             </div>
 
             <div class="btn-container">
@@ -208,10 +212,14 @@
             <div class="contact-details">
                 <p><img src="image/Email.png" alt="Email"><strong>Email:</strong> tamimhasanbd06@gmail.com</p>
                 <p><img src="image/Phone.png" alt="Phone"><strong>Phone:</strong> +8801883650010</p>
-                <p><img src="image/What's up.png" alt="WhatsApp"><strong>WhatsApp:</strong> <a href="https://wa.me/8801883650010" target="_blank">+8801883650010</a></p>
-                <p><img src="image/icon-github.png" alt="GitHub"><strong>GitHub:</strong> <a href="https://github.com/tamimhasanbd06" target="_blank">tamimhasanbd06</a></p>
-                <p><img src="image/icon-fb.png" alt="Facebook"><strong>Facebook:</strong> <a href="https://www.facebook.com/tamimhasanbd06" target="_blank">M. Tamim Hasan</a></p>
-                <p><img src="image/Linkedin.png" alt="LinkedIn"><strong>LinkedIn:</strong> <a href="https://www.linkedin.com/in/tamim-hasan-8739073a3/" target="_blank">Tamim Hasan</a></p>
+                <p><img src="image/What's up.png" alt="WhatsApp"><strong>WhatsApp:</strong> <a
+                        href="https://wa.me/8801883650010" target="_blank">+8801883650010</a></p>
+                <p><img src="image/icon-github.png" alt="GitHub"><strong>GitHub:</strong> <a
+                        href="https://github.com/tamimhasanbd06" target="_blank">tamimhasanbd06</a></p>
+                <p><img src="image/icon-fb.png" alt="Facebook"><strong>Facebook:</strong> <a
+                        href="https://www.facebook.com/tamimhasanbd06" target="_blank">M. Tamim Hasan</a></p>
+                <p><img src="image/Linkedin.png" alt="LinkedIn"><strong>LinkedIn:</strong> <a
+                        href="https://www.linkedin.com/in/tamim-hasan-8739073a3/" target="_blank">Tamim Hasan</a></p>
             </div>
         </div>
     </footer>

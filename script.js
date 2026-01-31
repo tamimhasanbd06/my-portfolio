@@ -1,6 +1,6 @@
 // Smooth scroll navigation
 document.querySelectorAll('#navbar a').forEach(link => {
-    link.addEventListener('click', function (e) {
+    link.addEventListener('click', function(e) {
         e.preventDefault();
         const targetId = this.getAttribute('href');
         const targetSection = document.querySelector(targetId);
@@ -37,7 +37,7 @@ revealOnScroll();
 
 // Button ripple effect
 document.querySelectorAll(".btn").forEach(button => {
-    button.addEventListener("click", function (e) {
+    button.addEventListener("click", function(e) {
         const circle = document.createElement("span");
         const diameter = Math.max(this.clientWidth, this.clientHeight);
         const radius = diameter / 2;
@@ -54,3 +54,13 @@ document.querySelectorAll(".btn").forEach(button => {
         this.appendChild(circle);
     });
 });
+
+// Hamburger Menu Toggle (for mobile)
+const menuToggle = document.getElementById('menu-toggle');
+const navLinks = document.querySelector('.nav-links');
+
+if(menuToggle) {
+    menuToggle.addEventListener('click', () => {
+        navLinks.classList.toggle('active');
+    });
+}
