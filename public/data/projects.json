@@ -34,17 +34,6 @@
     "technologies": ["React", "JavaScript", "Material UI", "Chart.js"],
     "features": ["Instant payment calculations", "Interactive amount controls", "Responsive financial visualization", "Accessible user interface"],
     "featured": false
-  },
-  {
-    "id": 4,
-    "name": "Tile Gallery",
-    "type": "Next.js",
-    "image": "https://s1.imgbb.ws/file/storage-sv1/Y07yV.png",
-    "description": "A modern tile storefront that makes browsing products and discovering interior design options simple.",
-    "longDescription": "Tile Gallery is a product discovery experience for browsing tile collections, viewing product information, and organizing favorites. Its clean storefront structure is optimized for product clarity and responsive browsing.",
-    "live": "https://tile-gallery-azure.vercel.app/",
-    "technologies": ["Next.js", "TypeScript", "E-commerce UI"],
-    "features": ["Responsive product gallery", "Detailed tile information", "Favorite-focused interactions", "Modern storefront layout"],
-    "featured": false
   }
+
 ]

@@ -1,13 +1,43 @@
 "use client";
 
-import { useState } from "react";
-import { motion, useReducedMotion } from "framer-motion";
-import type { IconType } from "react-icons";
-
-import { FaGithub, FaNodeJs } from "react-icons/fa";
+import {
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 
 import {
+  motion,
+  useReducedMotion,
+} from "framer-motion";
+
+import type { IconType } from "react-icons";
+
+import {
+  FaAws,
+  FaDocker,
+  FaGithub,
+  FaNodeJs,
+  FaPython,
+} from "react-icons/fa";
+
+import {
+  SiFastapi,
+  SiGit,
+  SiNginx,
+  SiNestjs,
+  SiPostgresql,
+  SiVite,
+} from "react-icons/si";
+
+import {
+  FiArrowUpRight,
   FiCode,
+  FiDatabase,
+  FiGlobe,
+  FiLayers,
+  FiLoader,
+  FiServer,
   FiTerminal,
   FiTriangle,
 } from "react-icons/fi";
@@ -17,81 +47,390 @@ import {
   VscExtensions,
 } from "react-icons/vsc";
 
-type ToolItem = {
+/* ========================================================================= */
+/*                                Types                                      */
+/* ========================================================================= */
+
+type ToolCategory =
+  | "Development"
+  | "Backend"
+  | "DevOps"
+  | "Database"
+  | "Deployment"
+  | "Tools";
+
+type ToolData = {
+  id: string;
   name: string;
   description: string;
   tags: string[];
-  icon: IconType;
+  category: string;
+  icon: string;
+  featured?: boolean;
 };
 
-const tools: ToolItem[] = [
-  {
-    name: "GitHub",
-    description:
-      "I use GitHub to manage source code, maintain clean version history, and collaborate efficiently with development teams.",
-    tags: ["Git", "Collaboration"],
-    icon: FaGithub,
-  },
-  {
-    name: "Terminal",
-    description:
-      "The terminal helps me work efficiently with Git, package managers, development scripts, builds, and automation.",
-    tags: ["CLI", "Productivity"],
-    icon: FiTerminal,
-  },
-  {
-    name: "Node.js",
-    description:
-      "Node.js allows me to work beyond the frontend and build APIs, backend services, integrations, and full-stack applications.",
-    tags: ["Backend", "API"],
-    icon: FaNodeJs,
-  },
-  {
-    name: "Deployment",
-    description:
-      "I use modern deployment workflows to move applications from development to production reliably and efficiently.",
-    tags: ["Deployment", "Production"],
-    icon: FiTriangle,
-  },
-  {
-    name: "Extensions",
-    description:
-      "I use carefully selected VS Code extensions for formatting, debugging, code quality, productivity, and a cleaner workflow.",
-    tags: ["Workflow", "Quality"],
-    icon: VscExtensions,
-  },
-];
+type ToolItem = ToolData & {
+  iconComponent: IconType;
+};
 
-function getCardPosition(index: number) {
-  switch (index) {
-    case 0:
-      return "left-[88px] top-1/2 -translate-y-1/2";
+/* ========================================================================= */
+/*                              Icon Mapping                                 */
+/* ========================================================================= */
 
-    case 1:
-      return "left-[70px] top-[70px]";
+/*
+ * JSON file contains only strings:
+ *
+ * {
+ *   "icon": "github"
+ * }
+ *
+ * This object converts those strings into
+ * actual React icon components.
+ */
 
-    case 2:
-      return "right-[70px] top-[70px]";
+const iconMap: Record<string, IconType> = {
+  github: FaGithub,
+  git: SiGit,
 
-    case 3:
-      return "right-[70px] bottom-[70px]";
+  terminal: FiTerminal,
 
-    case 4:
-      return "left-[70px] bottom-[70px]";
+  nodejs: FaNodeJs,
+  python: FaPython,
 
-    default:
-      return "left-[88px] top-1/2 -translate-y-1/2";
-  }
+  aws: FaAws,
+  docker: FaDocker,
+
+  nginx: SiNginx,
+
+  postgresql: SiPostgresql,
+
+  fastapi: SiFastapi,
+  nestjs: SiNestjs,
+
+  vite: SiVite,
+
+  vscode: VscCode,
+  code: VscCode,
+  extensions: VscExtensions,
+
+  deployment: FiTriangle,
+
+  server: FiServer,
+  database: FiDatabase,
+  globe: FiGlobe,
+  layers: FiLayers,
+
+  /*
+   * IMPORTANT:
+   * If an unknown icon comes from JSON,
+   * FiCode will be used instead.
+   */
+  default: FiCode,
+};
+
+/* ========================================================================= */
+/*                         Safe Icon Resolver                                */
+/* ========================================================================= */
+
+function getToolIcon(
+  iconName: string,
+): IconType {
+  return (
+    iconMap[iconName] ??
+    iconMap.default
+  );
 }
 
-export default function ProductivitySection() {
-  const reduceMotion = useReducedMotion();
+/* ========================================================================= */
+/*                         Category Icon Mapping                             */
+/* ========================================================================= */
 
-  const [isOrbitHovered, setIsOrbitHovered] =
-    useState(false);
+const categoryIcons: Record<
+  string,
+  IconType
+> = {
+  Development: FiCode,
+  Backend: FiServer,
+  DevOps: FiLayers,
+  Database: FiDatabase,
+  Deployment: FiGlobe,
+  Tools: VscCode,
+
+  default: FiCode,
+};
+
+/* ========================================================================= */
+/*                     Safe Category Icon Resolver                           */
+/* ========================================================================= */
+
+function getCategoryIcon(
+  category: string,
+): IconType {
+  return (
+    categoryIcons[category] ??
+    categoryIcons.default
+  );
+}
+
+/* ========================================================================= */
+/*                           Productivity Section                            */
+/* ========================================================================= */
+
+export default function ProductivitySection() {
+  const reduceMotion =
+    useReducedMotion();
+
+  /* ----------------------------------------------------------------------- */
+  /*                              State                                      */
+  /* ----------------------------------------------------------------------- */
+
+  const [tools, setTools] =
+    useState<ToolItem[]>([]);
+
+  const [loading, setLoading] =
+    useState(true);
+
+  const [error, setError] =
+    useState<string | null>(null);
 
   const [activeTool, setActiveTool] =
-    useState<number | null>(null);
+    useState<string | null>(null);
+
+  const [
+    selectedCategory,
+    setSelectedCategory,
+  ] = useState<
+    "All" | string
+  >("All");
+
+  /* ----------------------------------------------------------------------- */
+  /*                         Load JSON Data                                  */
+  /* ----------------------------------------------------------------------- */
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const loadTools = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        const response =
+          await fetch(
+            "/data/ProductivitySection.json",
+            {
+              cache: "no-store",
+            },
+          );
+
+        if (!response.ok) {
+          throw new Error(
+            `Failed to load productivity data (${response.status})`,
+          );
+        }
+
+        const data: unknown =
+          await response.json();
+
+        /*
+         * Validate that the response
+         * is an array before processing.
+         */
+        if (!Array.isArray(data)) {
+          throw new Error(
+            "ProductivitySection.json must contain an array.",
+          );
+        }
+
+        const normalizedTools: ToolItem[] =
+          data
+            .filter(
+              (
+                item,
+              ): item is ToolData =>
+                typeof item ===
+                  "object" &&
+                item !== null &&
+                "id" in item &&
+                "name" in item &&
+                "description" in item &&
+                "tags" in item &&
+                "category" in item &&
+                "icon" in item,
+            )
+            .map(
+              (item) => ({
+                ...item,
+                id: String(
+                  item.id,
+                ),
+                name: String(
+                  item.name,
+                ),
+                description:
+                  String(
+                    item.description,
+                  ),
+                category:
+                  String(
+                    item.category,
+                  ),
+                icon: String(
+                  item.icon,
+                ),
+                tags: Array.isArray(
+                  item.tags,
+                )
+                  ? item.tags.map(
+                      String,
+                    )
+                  : [],
+                iconComponent:
+                  getToolIcon(
+                    String(
+                      item.icon,
+                    ),
+                  ),
+              }),
+            );
+
+        if (!cancelled) {
+          setTools(
+            normalizedTools,
+          );
+        }
+      } catch (err) {
+        if (!cancelled) {
+          setError(
+            err instanceof Error
+              ? err.message
+              : "Something went wrong while loading the tools.",
+          );
+        }
+      } finally {
+        if (!cancelled) {
+          setLoading(false);
+        }
+      }
+    };
+
+    loadTools();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  /* ----------------------------------------------------------------------- */
+  /*                            Escape Key                                   */
+  /* ----------------------------------------------------------------------- */
+
+  useEffect(() => {
+    const handleKeyDown = (
+      event: KeyboardEvent,
+    ) => {
+      if (
+        event.key === "Escape"
+      ) {
+        setActiveTool(null);
+      }
+    };
+
+    window.addEventListener(
+      "keydown",
+      handleKeyDown,
+    );
+
+    return () => {
+      window.removeEventListener(
+        "keydown",
+        handleKeyDown,
+      );
+    };
+  }, []);
+
+  /* ----------------------------------------------------------------------- */
+  /*                            Categories                                   */
+  /* ----------------------------------------------------------------------- */
+
+  const categories =
+    useMemo(() => {
+      return [
+        "All",
+        ...Array.from(
+          new Set(
+            tools.map(
+              (tool) =>
+                tool.category,
+            ),
+          ),
+        ),
+      ];
+    }, [tools]);
+
+  /* ----------------------------------------------------------------------- */
+  /*                              Filtering                                  */
+  /* ----------------------------------------------------------------------- */
+
+  const filteredTools =
+    useMemo(() => {
+      if (
+        selectedCategory ===
+        "All"
+      ) {
+        return tools;
+      }
+
+      return tools.filter(
+        (tool) =>
+          tool.category ===
+          selectedCategory,
+      );
+    }, [
+      tools,
+      selectedCategory,
+    ]);
+
+  /* ----------------------------------------------------------------------- */
+  /*                           Statistics                                    */
+  /* ----------------------------------------------------------------------- */
+
+  const categoryCount =
+    useMemo(() => {
+      return new Set(
+        tools.map(
+          (tool) =>
+            tool.category,
+        ),
+      ).size;
+    }, [tools]);
+
+  const featuredCount =
+    useMemo(() => {
+      return tools.filter(
+        (tool) =>
+          tool.featured,
+      ).length;
+    }, [tools]);
+
+  /* ----------------------------------------------------------------------- */
+  /*                         Tool Selection                                  */
+  /* ----------------------------------------------------------------------- */
+
+  const handleToolClick = (
+    toolId: string,
+  ) => {
+    setActiveTool(
+      (current) =>
+        current === toolId
+          ? null
+          : toolId,
+    );
+  };
+
+  /* ========================================================================= */
+  /*                                Render                                    */
+  /* ========================================================================= */
 
   return (
     <section
@@ -112,43 +451,76 @@ export default function ProductivitySection() {
         lg:px-8
       "
     >
-      {/* Background glow */}
+      {/* =================================================================== */}
+      {/* Background                                                          */}
+      {/* =================================================================== */}
+
       <div
         aria-hidden="true"
         className="
           pointer-events-none
           absolute
           left-1/2
-          top-1/2
-          h-[650px]
-          w-[650px]
+          top-0
+          h-[600px]
+          w-[900px]
           -translate-x-1/2
-          -translate-y-1/2
           rounded-full
-          bg-blue-500/[0.06]
-          blur-[170px]
+          bg-cyan-500/[0.055]
+          blur-[150px]
         "
       />
 
-      {/* Background grid */}
+      <div
+        aria-hidden="true"
+        className="
+          pointer-events-none
+          absolute
+          bottom-0
+          left-1/2
+          h-[500px]
+          w-[800px]
+          -translate-x-1/2
+          rounded-full
+          bg-blue-500/[0.045]
+          blur-[150px]
+        "
+      />
+
       <div
         aria-hidden="true"
         className="
           pointer-events-none
           absolute
           inset-0
-          opacity-[0.06]
-          [background-image:linear-gradient(rgba(255,255,255,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.04)_1px,transparent_1px)]
+          opacity-[0.055]
+          [background-image:linear-gradient(rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.05)_1px,transparent_1px)]
           [background-size:55px_55px]
         "
       />
 
-      <div className="relative z-10 mx-auto max-w-7xl">
-        {/* Heading */}
+      {/* =================================================================== */}
+      {/* Container                                                           */}
+      {/* =================================================================== */}
+
+      <div
+        className="
+          relative
+          z-10
+          mx-auto
+          max-w-7xl
+        "
+      >
+        {/* ================================================================= */}
+        {/* Header                                                            */}
+        {/* ================================================================= */}
+
         <motion.div
           initial={{
             opacity: 0,
-            y: reduceMotion ? 0 : 22,
+            y: reduceMotion
+              ? 0
+              : 24,
           }}
           whileInView={{
             opacity: 1,
@@ -156,17 +528,28 @@ export default function ProductivitySection() {
           }}
           viewport={{
             once: true,
-            amount: 0.3,
+            amount: 0.25,
           }}
           transition={{
             duration: 0.7,
-            ease: [0.22, 1, 0.36, 1],
+            ease: [
+              0.22,
+              1,
+              0.36,
+              1,
+            ],
           }}
-          className="mx-auto max-w-3xl text-center"
+          className="
+            mx-auto
+            max-w-3xl
+            text-center
+          "
         >
+          {/* Badge */}
+
           <div
             className="
-              mb-4
+              mb-5
               inline-flex
               items-center
               gap-2
@@ -198,9 +581,11 @@ export default function ProductivitySection() {
                 sm:text-xs
               "
             >
-              For Recruiters
+              Developer Toolkit
             </span>
           </div>
+
+          {/* Heading */}
 
           <h2
             className="
@@ -222,9 +607,11 @@ export default function ProductivitySection() {
                 text-transparent
               "
             >
-              My Productivity
+              My Workflow
             </span>
           </h2>
+
+          {/* Description */}
 
           <p
             className="
@@ -237,695 +624,950 @@ export default function ProductivitySection() {
               sm:text-base
             "
           >
-            These are some of the tools I use to write cleaner code,
-            collaborate effectively, solve problems faster, and build
-            maintainable applications.
+            A focused collection of
+            technologies and
+            development tools I use
+            to design, build, deploy,
+            and maintain modern web
+            applications.
           </p>
         </motion.div>
 
-        {/* Desktop orbit */}
-        <div
-          className="
-            relative
-            mx-auto
-            mt-16
-            hidden
-            h-[720px]
-            max-w-[1000px]
-            items-center
-            justify-center
-            overflow-visible
-            md:flex
-          "
-        >
-          {/* Floating wrapper */}
-          <motion.div
-            animate={
-              reduceMotion
-                ? undefined
-                : {
-                    y: [0, -6, 0, 6, 0],
-                  }
-            }
-            transition={{
-              duration: 8,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-            className="
-              relative
-              flex
-              h-[620px]
-              w-[620px]
-              items-center
-              justify-center
-              overflow-visible
-            "
-          >
-            {/* Outer ring */}
-            <div
-              className="
-                pointer-events-none
-                absolute
-                left-1/2
-                top-1/2
-                h-[500px]
-                w-[500px]
-                -translate-x-1/2
-                -translate-y-1/2
-                rounded-full
-                border
-                border-cyan-400/10
-              "
-            />
+        {/* ================================================================= */}
+        {/* Loading State                                                     */}
+        {/* ================================================================= */}
 
-            {/* Dashed ring */}
-            <div
-              className="
-                pointer-events-none
-                absolute
-                left-1/2
-                top-1/2
-                h-[430px]
-                w-[430px]
-                -translate-x-1/2
-                -translate-y-1/2
-                rounded-full
-                border
-                border-dashed
-                border-blue-400/15
-              "
-            />
-
-            {/* Inner ring */}
-            <div
-              className="
-                pointer-events-none
-                absolute
-                left-1/2
-                top-1/2
-                h-[275px]
-                w-[275px]
-                -translate-x-1/2
-                -translate-y-1/2
-                rounded-full
-                border
-                border-cyan-400/[0.08]
-              "
-            />
-
-            {/* Orbit */}
-            <motion.div
-              onMouseEnter={() =>
-                setIsOrbitHovered(true)
-              }
-              onMouseLeave={() => {
-                setIsOrbitHovered(false);
-                setActiveTool(null);
-              }}
-              animate={
-                reduceMotion
-                  ? { rotate: 0 }
-                  : isOrbitHovered
-                    ? undefined
-                    : { rotate: 360 }
-              }
-              transition={{
-                duration: 36,
-                repeat: Infinity,
-                ease: "linear",
-              }}
-              className="
-                absolute
-                left-1/2
-                top-1/2
-                h-[500px]
-                w-[500px]
-                -translate-x-1/2
-                -translate-y-1/2
-                rounded-full
-                overflow-visible
-              "
-            >
-              {tools.map((tool, index) => {
-                const Icon = tool.icon;
-
-                const angle =
-                  (360 / tools.length) * index;
-
-                const radians =
-                  (angle * Math.PI) / 180;
-
-                const radius = 250;
-
-                const x =
-                  Math.cos(radians) * radius;
-
-                const y =
-                  Math.sin(radians) * radius;
-
-                const isActive =
-                  activeTool === index;
-
-                return (
-                  <motion.div
-                    key={tool.name}
-                    style={{
-                      left: "50%",
-                      top: "50%",
-                      x,
-                      y,
-                    }}
-                    className="
-                      absolute
-                      z-30
-                      -ml-8
-                      -mt-8
-                      overflow-visible
-                    "
-                    animate={
-                      reduceMotion
-                        ? { rotate: 0 }
-                        : isOrbitHovered
-                          ? undefined
-                          : { rotate: -360 }
-                    }
-                    transition={{
-                      duration: 36,
-                      repeat: Infinity,
-                      ease: "linear",
-                    }}
-                    onMouseEnter={() => {
-                      setActiveTool(index);
-                      setIsOrbitHovered(true);
-                    }}
-                    onMouseLeave={() => {
-                      setActiveTool(null);
-                      setIsOrbitHovered(false);
-                    }}
-                  >
-                    {/* Tool icon */}
-                    <motion.div
-                      whileHover={
-                        reduceMotion
-                          ? undefined
-                          : {
-                              scale: 1.1,
-                              y: -4,
-                            }
-                      }
-                      whileTap={{
-                        scale: 0.97,
-                      }}
-                      transition={{
-                        type: "spring",
-                        stiffness: 180,
-                        damping: 22,
-                        mass: 0.8,
-                      }}
-                      className="
-                        group
-                        relative
-                        flex
-                        h-16
-                        w-16
-                        cursor-pointer
-                        items-center
-                        justify-center
-                        rounded-2xl
-                        border
-                        border-cyan-400/25
-                        bg-[#071426]/95
-                        text-2xl
-                        text-cyan-300
-                        shadow-[0_0_30px_rgba(34,211,238,0.12)]
-                        backdrop-blur-xl
-                        transition-colors
-                        duration-300
-                        hover:border-cyan-300/60
-                        hover:bg-cyan-400/10
-                        hover:text-cyan-100
-                      "
-                    >
-                      <Icon />
-
-                      <span
-                        className="
-                          pointer-events-none
-                          absolute
-                          inset-[-10px]
-                          -z-10
-                          rounded-[22px]
-                          bg-cyan-400/15
-                          opacity-0
-                          blur-xl
-                          transition-opacity
-                          duration-500
-                          group-hover:opacity-100
-                        "
-                      />
-                    </motion.div>
-
-                    {/* Tool name */}
-                    <span
-                      className="
-                        absolute
-                        left-1/2
-                        top-[76px]
-                        -translate-x-1/2
-                        whitespace-nowrap
-                        text-[9px]
-                        font-bold
-                        uppercase
-                        tracking-[0.15em]
-                        text-slate-500
-                      "
-                    >
-                      {tool.name}
-                    </span>
-
-                    {/* Hover card */}
-                    <motion.div
-                      initial={false}
-                      animate={{
-                        opacity: isActive ? 1 : 0,
-                        scale: isActive ? 1 : 0.94,
-                        x: isActive ? 0 : 6,
-                        y: isActive ? 0 : 6,
-                        filter: isActive
-                          ? "blur(0px)"
-                          : "blur(5px)",
-                        pointerEvents: isActive
-                          ? "auto"
-                          : "none",
-                      }}
-                      transition={{
-                        duration: 0.35,
-                        ease: [0.22, 1, 0.36, 1],
-                      }}
-                      className={`
-                        absolute
-                        z-[100]
-                        w-[280px]
-                        rounded-2xl
-                        border
-                        border-cyan-400/20
-                        bg-[#06111f]/95
-                        p-4
-                        shadow-[0_25px_70px_rgba(0,0,0,0.75)]
-                        backdrop-blur-2xl
-                        ${getCardPosition(index)}
-                      `}
-                    >
-                      <div className="flex items-start gap-3">
-                        <span
-                          className="
-                            flex
-                            h-10
-                            w-10
-                            shrink-0
-                            items-center
-                            justify-center
-                            rounded-xl
-                            border
-                            border-cyan-400/20
-                            bg-cyan-400/10
-                            text-lg
-                            text-cyan-300
-                          "
-                        >
-                          <Icon />
-                        </span>
-
-                        <div>
-                          <h3 className="text-sm font-bold text-white">
-                            {tool.name}
-                          </h3>
-
-                          <p
-                            className="
-                              mt-1.5
-                              text-[11px]
-                              leading-5
-                              text-slate-400
-                            "
-                          >
-                            {tool.description}
-                          </p>
-                        </div>
-                      </div>
-
-                      <div className="mt-4 flex flex-wrap gap-2">
-                        {tool.tags.map((tag) => (
-                          <span
-                            key={tag}
-                            className="
-                              rounded-full
-                              border
-                              border-cyan-400/10
-                              bg-cyan-400/[0.06]
-                              px-2.5
-                              py-1
-                              text-[8px]
-                              font-bold
-                              uppercase
-                              tracking-[0.12em]
-                              text-cyan-300
-                            "
-                          >
-                            {tag}
-                          </span>
-                        ))}
-                      </div>
-                    </motion.div>
-                  </motion.div>
-                );
-              })}
-            </motion.div>
-
-            {/* Center glow */}
-            <motion.div
-              animate={
-                reduceMotion
-                  ? undefined
-                  : {
-                      scale: [1, 1.08, 1],
-                      opacity: [0.5, 0.75, 0.5],
-                    }
-              }
-              transition={{
-                duration: 5,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
-              className="
-                pointer-events-none
-                absolute
-                left-1/2
-                top-1/2
-                h-64
-                w-64
-                -translate-x-1/2
-                -translate-y-1/2
-                rounded-full
-                bg-blue-500/20
-                blur-[80px]
-              "
-            />
-
-            {/* Center VS Code icon */}
-            <motion.div
-              whileHover={
-                reduceMotion
-                  ? undefined
-                  : {
-                      scale: 1.05,
-                    }
-              }
-              transition={{
-                type: "spring",
-                stiffness: 180,
-                damping: 22,
-              }}
-              className="
-                relative
-                z-40
-                flex
-                h-44
-                w-44
-                items-center
-                justify-center
-                rounded-full
-                border
-                border-cyan-400/35
-                bg-gradient-to-br
-                from-[#071426]
-                via-[#041020]
-                to-[#02101e]
-                shadow-[0_0_90px_rgba(14,165,233,0.22)]
-                backdrop-blur-2xl
-              "
-            >
-              <motion.div
-                animate={
-                  reduceMotion
-                    ? undefined
-                    : {
-                        scale: [1, 1.04, 1],
-                        rotate: [
-                          0,
-                          1,
-                          0,
-                          -1,
-                          0,
-                        ],
-                      }
-                }
-                transition={{
-                  duration: 5,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                }}
-                className="
-                  flex
-                  h-24
-                  w-24
-                  items-center
-                  justify-center
-                  text-[76px]
-                  text-sky-400
-                  drop-shadow-[0_0_22px_rgba(56,189,248,0.45)]
-                "
-              >
-                <VscCode />
-              </motion.div>
-
-              <span
-                className="
-                  absolute
-                  right-8
-                  top-7
-                  h-2.5
-                  w-2.5
-                  rounded-full
-                  bg-emerald-400
-                  shadow-[0_0_13px_rgba(52,211,153,0.9)]
-                "
-              />
-            </motion.div>
-          </motion.div>
-        </div>
-
-        {/* Mobile */}
-        <div className="mt-14 md:hidden">
+        {loading && (
           <motion.div
             initial={{
               opacity: 0,
-              scale: 0.92,
             }}
-            whileInView={{
+            animate={{
               opacity: 1,
-              scale: 1,
             }}
-            viewport={{
-              once: true,
-            }}
-            transition={{
-              duration: 0.6,
-              ease: [0.22, 1, 0.36, 1],
-            }}
-            className="mb-10 flex justify-center"
+            className="
+              mx-auto
+              mt-14
+              flex
+              min-h-[220px]
+              max-w-xl
+              flex-col
+              items-center
+              justify-center
+              rounded-3xl
+              border
+              border-white/10
+              bg-white/[0.025]
+              backdrop-blur-xl
+            "
           >
-            <motion.div
-              animate={
-                reduceMotion
-                  ? undefined
-                  : {
-                      y: [0, -5, 0],
-                    }
-              }
-              transition={{
-                duration: 5,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
+            <FiLoader
               className="
-                flex
-                h-32
-                w-32
-                items-center
-                justify-center
-                rounded-full
-                border
-                border-cyan-400/30
-                bg-[#071426]
-                shadow-[0_0_50px_rgba(14,165,233,0.16)]
+                animate-spin
+                text-3xl
+                text-cyan-300
+              "
+            />
+
+            <p
+              className="
+                mt-4
+                text-xs
+                font-bold
+                uppercase
+                tracking-[0.16em]
+                text-slate-500
               "
             >
-              <VscCode className="text-[64px] text-sky-400" />
-            </motion.div>
+              Loading developer tools
+            </p>
           </motion.div>
+        )}
 
-          <div className="grid gap-4 sm:grid-cols-2">
-            {tools.map((tool, index) => {
-              const Icon = tool.icon;
+        {/* ================================================================= */}
+        {/* Error State                                                       */}
+        {/* ================================================================= */}
 
-              return (
-                <motion.article
-                  key={tool.name}
-                  initial={{
-                    opacity: 0,
-                    y: 22,
-                  }}
-                  whileInView={{
-                    opacity: 1,
-                    y: 0,
-                  }}
-                  viewport={{
-                    once: true,
-                    amount: 0.2,
-                  }}
-                  transition={{
-                    duration: 0.5,
-                    delay: index * 0.06,
-                    ease: [0.22, 1, 0.36, 1],
-                  }}
-                  whileHover={
-                    reduceMotion
-                      ? undefined
-                      : {
-                          y: -4,
-                        }
-                  }
-                  className="
-                    rounded-2xl
-                    border
-                    border-white/10
-                    bg-white/[0.035]
-                    p-5
-                    transition-colors
-                    duration-300
-                    hover:border-cyan-400/25
-                    hover:bg-cyan-400/[0.04]
-                  "
-                >
-                  <span
-                    className="
-                      flex
-                      h-11
-                      w-11
-                      items-center
-                      justify-center
-                      rounded-xl
-                      border
-                      border-cyan-400/20
-                      bg-cyan-400/10
-                      text-xl
-                      text-cyan-300
-                    "
-                  >
-                    <Icon />
-                  </span>
+        {!loading &&
+          error && (
+            <div
+              className="
+                mx-auto
+                mt-14
+                max-w-xl
+                rounded-3xl
+                border
+                border-red-400/20
+                bg-red-400/[0.04]
+                p-8
+                text-center
+              "
+            >
+              <FiCode
+                className="
+                  mx-auto
+                  text-3xl
+                  text-red-300
+                "
+              />
 
-                  <h3 className="mt-4 font-bold text-white">
-                    {tool.name}
-                  </h3>
+              <h3
+                className="
+                  mt-4
+                  text-base
+                  font-bold
+                  text-white
+                "
+              >
+                Unable to load developer tools
+              </h3>
 
-                  <p className="mt-2 text-sm leading-6 text-slate-400">
-                    {tool.description}
-                  </p>
+              <p
+                className="
+                  mt-2
+                  text-xs
+                  leading-6
+                  text-slate-500
+                "
+              >
+                {error}
+              </p>
 
-                  <div className="mt-4 flex flex-wrap gap-2">
-                    {tool.tags.map((tag) => (
-                      <span
-                        key={tag}
+              <p
+                className="
+                  mt-4
+                  text-[10px]
+                  font-bold
+                  uppercase
+                  tracking-[0.12em]
+                  text-red-300/70
+                "
+              >
+                Check public/data/ProductivitySection.json
+              </p>
+            </div>
+          )}
+
+        {/* ================================================================= */}
+        {/* Main Content                                                      */}
+        {/* ================================================================= */}
+
+        {!loading &&
+          !error &&
+          tools.length > 0 && (
+            <>
+              {/* =========================================================== */}
+              {/* Statistics                                                   */}
+              {/* =========================================================== */}
+
+              <motion.div
+                initial={{
+                  opacity: 0,
+                  y: reduceMotion
+                    ? 0
+                    : 18,
+                }}
+                whileInView={{
+                  opacity: 1,
+                  y: 0,
+                }}
+                viewport={{
+                  once: true,
+                  amount: 0.2,
+                }}
+                transition={{
+                  duration: 0.6,
+                  delay: 0.1,
+                }}
+                className="
+                  mx-auto
+                  mt-10
+                  grid
+                  max-w-3xl
+                  grid-cols-2
+                  gap-3
+                  sm:grid-cols-4
+                "
+              >
+                {[
+                  {
+                    value:
+                      tools.length,
+                    label:
+                      "Technologies",
+                  },
+                  {
+                    value:
+                      categoryCount,
+                    label:
+                      "Categories",
+                  },
+                  {
+                    value:
+                      featuredCount,
+                    label:
+                      "Core Tools",
+                  },
+                  {
+                    value:
+                      "100%",
+                    label:
+                      "Workflow",
+                  },
+                ].map(
+                  (
+                    stat,
+                    index,
+                  ) => (
+                    <div
+                      key={
+                        index
+                      }
+                      className="
+                        rounded-2xl
+                        border
+                        border-white/10
+                        bg-white/[0.025]
+                        px-4
+                        py-4
+                        text-center
+                        backdrop-blur-xl
+                      "
+                    >
+                      <div
                         className="
-                          rounded-full
-                          border
-                          border-cyan-400/10
-                          bg-cyan-400/[0.06]
-                          px-2.5
-                          py-1
+                          text-xl
+                          font-black
+                          text-cyan-300
+                          sm:text-2xl
+                        "
+                      >
+                        {
+                          stat.value
+                        }
+                      </div>
+
+                      <div
+                        className="
+                          mt-1
                           text-[9px]
                           font-bold
                           uppercase
-                          text-cyan-300
+                          tracking-[0.16em]
+                          text-slate-500
                         "
                       >
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                </motion.article>
-              );
-            })}
-          </div>
-        </div>
+                        {
+                          stat.label
+                        }
+                      </div>
+                    </div>
+                  ),
+                )}
+              </motion.div>
 
-        {/* Recruiter message */}
-        <motion.div
-          initial={{
-            opacity: 0,
-            y: 20,
-          }}
-          whileInView={{
-            opacity: 1,
-            y: 0,
-          }}
-          viewport={{
-            once: true,
-          }}
-          transition={{
-            duration: 0.65,
-            ease: [0.22, 1, 0.36, 1],
-          }}
-          className="
-            mx-auto
-            mt-10
-            max-w-3xl
-            rounded-2xl
-            border
-            border-white/10
-            bg-white/[0.03]
-            p-6
-            text-center
-            sm:p-7
-          "
-        >
-          <FiCode className="mx-auto text-2xl text-cyan-300" />
+              {/* =========================================================== */}
+              {/* Category Filter                                              */}
+              {/* =========================================================== */}
 
-          <p
-            className="
-              mx-auto
-              mt-4
-              max-w-2xl
-              text-sm
-              leading-7
-              text-slate-400
-              sm:text-base
-            "
-          >
-            I use development tools not simply to write more code,
-            but to solve problems clearly, maintain quality,
-            collaborate efficiently, and deliver dependable web
-            experiences.
-          </p>
+              <div
+                className="
+                  mt-12
+                  flex
+                  flex-wrap
+                  justify-center
+                  gap-2
+                "
+              >
+                {categories.map(
+                  (category) => {
+                    const isSelected =
+                      selectedCategory ===
+                      category;
 
-          <p
-            className="
-              mt-4
-              text-xs
-              font-bold
-              uppercase
-              tracking-[0.18em]
-              text-cyan-300
-            "
-          >
-            Tools support the workflow. Problem solving drives it.
-          </p>
-        </motion.div>
+                    const CategoryIcon =
+                      category ===
+                      "All"
+                        ? FiCode
+                        : getCategoryIcon(
+                            category,
+                          );
+
+                    return (
+                      <button
+                        key={
+                          category
+                        }
+                        type="button"
+                        onClick={() =>
+                          setSelectedCategory(
+                            category,
+                          )
+                        }
+                        className={`
+                          inline-flex
+                          items-center
+                          gap-2
+                          rounded-full
+                          border
+                          px-3.5
+                          py-2
+                          text-[9px]
+                          font-bold
+                          uppercase
+                          tracking-[0.12em]
+                          transition-all
+                          duration-300
+                          ${
+                            isSelected
+                              ? `
+                                border-cyan-300/40
+                                bg-cyan-400/10
+                                text-cyan-200
+                                shadow-[0_0_25px_rgba(34,211,238,0.08)]
+                              `
+                              : `
+                                border-white/10
+                                bg-white/[0.025]
+                                text-slate-500
+                                hover:border-cyan-400/25
+                                hover:bg-cyan-400/[0.05]
+                                hover:text-cyan-300
+                              `
+                          }
+                        `}
+                      >
+                        <CategoryIcon
+                          className="text-sm"
+                        />
+
+                        {category}
+                      </button>
+                    );
+                  },
+                )}
+              </div>
+
+              {/* =========================================================== */}
+              {/* Cards Grid                                                   */}
+              {/* =========================================================== */}
+
+              <motion.div
+                layout
+                className="
+                  mt-10
+                  grid
+                  gap-5
+                  sm:grid-cols-2
+                  lg:grid-cols-3
+                  xl:grid-cols-4
+                "
+              >
+                {filteredTools.map(
+                  (
+                    tool,
+                    index,
+                  ) => {
+                    /*
+                     * IMPORTANT:
+                     * iconComponent is already
+                     * resolved safely.
+                     */
+
+                    const Icon =
+                      tool.iconComponent;
+
+                    const isActive =
+                      activeTool ===
+                      tool.id;
+
+                    const CategoryIcon =
+                      getCategoryIcon(
+                        tool.category,
+                      );
+
+                    return (
+                      <motion.article
+                        layout
+                        key={
+                          tool.id
+                        }
+                        initial={{
+                          opacity: 0,
+                          y: reduceMotion
+                            ? 0
+                            : 24,
+                        }}
+                        whileInView={{
+                          opacity: 1,
+                          y: 0,
+                        }}
+                        viewport={{
+                          once: true,
+                          amount: 0.15,
+                        }}
+                        transition={{
+                          duration: 0.5,
+                          delay:
+                            index *
+                            0.045,
+                          ease: [
+                            0.22,
+                            1,
+                            0.36,
+                            1,
+                          ],
+                        }}
+                        whileHover={
+                          reduceMotion
+                            ? undefined
+                            : {
+                                y: -7,
+                              }
+                        }
+                        className={`
+                          group
+                          relative
+                          overflow-hidden
+                          rounded-3xl
+                          border
+                          p-5
+                          transition-all
+                          duration-300
+                          ${
+                            isActive
+                              ? `
+                                border-cyan-300/45
+                                bg-cyan-400/[0.075]
+                                shadow-[0_25px_70px_rgba(34,211,238,0.13)]
+                              `
+                              : `
+                                border-white/10
+                                bg-white/[0.035]
+                                hover:border-cyan-400/25
+                                hover:bg-white/[0.05]
+                                hover:shadow-[0_25px_60px_rgba(0,0,0,0.35)]
+                              `
+                          }
+                        `}
+                      >
+                        {/* ================================================= */}
+                        {/* Glow                                                 */}
+                        {/* ================================================= */}
+
+                        <div
+                          aria-hidden="true"
+                          className="
+                            pointer-events-none
+                            absolute
+                            -right-20
+                            -top-20
+                            h-40
+                            w-40
+                            rounded-full
+                            bg-cyan-400/10
+                            opacity-0
+                            blur-3xl
+                            transition-opacity
+                            duration-500
+                            group-hover:opacity-100
+                          "
+                        />
+
+                        <div
+                          aria-hidden="true"
+                          className="
+                            pointer-events-none
+                            absolute
+                            -bottom-24
+                            -left-24
+                            h-44
+                            w-44
+                            rounded-full
+                            bg-blue-500/[0.06]
+                            opacity-0
+                            blur-3xl
+                            transition-opacity
+                            duration-500
+                            group-hover:opacity-100
+                          "
+                        />
+
+                        <div className="relative z-10">
+
+                          {/* ============================================= */}
+                          {/* Top Row                                           */}
+                          {/* ============================================= */}
+
+                          <div
+                            className="
+                              flex
+                              items-start
+                              justify-between
+                              gap-3
+                            "
+                          >
+                            {/* Icon */}
+
+                            <motion.button
+                              type="button"
+                              onClick={() =>
+                                handleToolClick(
+                                  tool.id,
+                                )
+                              }
+                              aria-label={`Focus ${tool.name}`}
+                              aria-pressed={
+                                isActive
+                              }
+                              whileTap={
+                                reduceMotion
+                                  ? undefined
+                                  : {
+                                      scale: 0.94,
+                                    }
+                              }
+                              className={`
+                                relative
+                                flex
+                                h-12
+                                w-12
+                                shrink-0
+                                items-center
+                                justify-center
+                                rounded-2xl
+                                border
+                                text-xl
+                                transition-all
+                                duration-300
+                                ${
+                                  isActive
+                                    ? `
+                                      border-cyan-300/50
+                                      bg-cyan-400/15
+                                      text-cyan-200
+                                      shadow-[0_0_35px_rgba(34,211,238,0.2)]
+                                    `
+                                    : `
+                                      border-cyan-400/15
+                                      bg-cyan-400/[0.06]
+                                      text-cyan-300
+                                      group-hover:border-cyan-300/35
+                                      group-hover:bg-cyan-400/10
+                                      group-hover:text-cyan-100
+                                    `
+                                }
+                              `}
+                            >
+                              <Icon />
+
+                              <span
+                                aria-hidden="true"
+                                className="
+                                  pointer-events-none
+                                  absolute
+                                  inset-[-8px]
+                                  rounded-[20px]
+                                  bg-cyan-400/10
+                                  opacity-0
+                                  blur-xl
+                                  transition-opacity
+                                  duration-500
+                                  group-hover:opacity-100
+                                "
+                              />
+                            </motion.button>
+
+                            {/* Category */}
+
+                            <span
+                              className="
+                                inline-flex
+                                items-center
+                                gap-1.5
+                                rounded-full
+                                border
+                                border-white/10
+                                bg-white/[0.025]
+                                px-2.5
+                                py-1.5
+                                text-[8px]
+                                font-bold
+                                uppercase
+                                tracking-[0.1em]
+                                text-slate-500
+                              "
+                            >
+                              <CategoryIcon />
+
+                              {
+                                tool.category
+                              }
+                            </span>
+                          </div>
+
+                          {/* ============================================= */}
+                          {/* Title                                             */}
+                          {/* ============================================= */}
+
+                          <div
+                            className="
+                              mt-5
+                              flex
+                              items-center
+                              justify-between
+                              gap-3
+                            "
+                          >
+                            <h3
+                              className="
+                                text-base
+                                font-black
+                                tracking-tight
+                                text-white
+                              "
+                            >
+                              {
+                                tool.name
+                              }
+                            </h3>
+
+                            <FiArrowUpRight
+                              className="
+                                text-lg
+                                text-slate-700
+                                transition-all
+                                duration-300
+                                group-hover:-translate-y-0.5
+                                group-hover:translate-x-0.5
+                                group-hover:text-cyan-300
+                              "
+                            />
+                          </div>
+
+                          {/* ============================================= */}
+                          {/* Description                                      */}
+                          {/* ============================================= */}
+
+                          <p
+                            className="
+                              mt-3
+                              min-h-[88px]
+                              text-[12px]
+                              leading-6
+                              text-slate-400
+                            "
+                          >
+                            {
+                              tool.description
+                            }
+                          </p>
+
+                          {/* ============================================= */}
+                          {/* Divider                                          */}
+                          {/* ============================================= */}
+
+                          <div
+                            className="
+                              my-4
+                              h-px
+                              bg-gradient-to-r
+                              from-transparent
+                              via-white/10
+                              to-transparent
+                            "
+                          />
+
+                          {/* ============================================= */}
+                          {/* Tags                                             */}
+                          {/* ============================================= */}
+
+                          <div
+                            className="
+                              flex
+                              flex-wrap
+                              gap-2
+                            "
+                          >
+                            {tool.tags.map(
+                              (
+                                tag,
+                              ) => (
+                                <span
+                                  key={
+                                    tag
+                                  }
+                                  className="
+                                    rounded-full
+                                    border
+                                    border-cyan-400/10
+                                    bg-cyan-400/4.5
+                                    px-2.5
+                                    py-1
+                                    text-[8px]
+                                    font-bold
+                                    uppercase
+                                  tracking-widest
+                                    text-cyan-300/80
+                                    transition-colors
+                                    duration-300
+                                    group-hover:border-cyan-400/20
+                                    group-hover:text-cyan-300
+                                  "
+                                >
+                                  {
+                                    tag
+                                  }
+                                </span>
+                              ),
+                            )}
+                          </div>
+
+                          {/* ============================================= */}
+                          {/* Bottom Status                                    */}
+                          {/* ============================================= */}
+
+                          <div
+                            className="
+                              mt-5
+                              flex
+                              items-center
+                              justify-between
+                            "
+                          >
+                            <div
+                              className="
+                                flex
+                                items-center
+                                gap-2
+                                text-[8px]
+                                font-bold
+                                uppercase
+                                tracking-[0.13em]
+                                text-slate-600
+                              "
+                            >
+                              <span
+                                className="
+                                  h-1.5
+                                  w-1.5
+                                  rounded-full
+                                  bg-emerald-400/80
+                                  shadow-[0_0_9px_rgba(52,211,153,0.6)]
+                                "
+                              />
+
+                              Active Workflow
+                            </div>
+
+                            <button
+                              type="button"
+                              onClick={() =>
+                                handleToolClick(
+                                  tool.id,
+                                )
+                              }
+                              className="
+                                text-[8px]
+                                font-bold
+                                uppercase
+                                tracking-[0.13em]
+                                text-cyan-400/60
+                                transition-colors
+                                duration-300
+                                hover:text-cyan-300
+                              "
+                            >
+                              {isActive
+                                ? "Selected"
+                                : "Explore"}
+                            </button>
+                          </div>
+
+                          {/* ============================================= */}
+                          {/* Active Line                                      */}
+                          {/* ============================================= */}
+
+                          <motion.div
+                            initial={false}
+                            animate={{
+                              scaleX:
+                                isActive
+                                  ? 1
+                                  : 0,
+                              opacity:
+                                isActive
+                                  ? 1
+                                  : 0,
+                            }}
+                            transition={{
+                              duration: 0.3,
+                            }}
+                            className="
+                              absolute
+                              bottom-0
+                              left-5
+                              right-5
+                              h-px
+                              origin-left
+                             bg-linear-to-r
+                              from-transparent
+                              via-cyan-400
+                              to-transparent
+                            "
+                          />
+                        </div>
+                      </motion.article>
+                    );
+                  },
+                )}
+              </motion.div>
+
+              {/* =========================================================== */}
+              {/* Empty State                                                  */}
+              {/* =========================================================== */}
+
+              {filteredTools.length ===
+                0 && (
+                <div
+                  className="
+                    mt-10
+                    rounded-3xl
+                    border
+                    border-white/10
+                  bg-white/2.5
+                    p-12
+                    text-center
+                  "
+                >
+                  <FiCode
+                    className="
+                      mx-auto
+                      text-3xl
+                      text-slate-600
+                    "
+                  />
+
+                  <p
+                    className="
+                      mt-4
+                      text-sm
+                      text-slate-500
+                    "
+                  >
+                    No tools found in
+                    this category.
+                  </p>
+                </div>
+              )}
+            </>
+          )}
+
+        {/* ================================================================= */}
+        {/* Bottom Message                                                    */}
+        {/* ================================================================= */}
+
+        {!loading &&
+          !error && (
+            <motion.div
+              initial={{
+                opacity: 0,
+                y: reduceMotion
+                  ? 0
+                  : 20,
+              }}
+              whileInView={{
+                opacity: 1,
+                y: 0,
+              }}
+              viewport={{
+                once: true,
+                amount: 0.25,
+              }}
+              transition={{
+                duration: 0.65,
+              }}
+              className="
+                mx-auto
+                mt-12
+                max-w-4xl
+                overflow-hidden
+                rounded-3xl
+                border
+                border-white/10
+                bg-white/2.5
+                p-6
+                text-center
+                backdrop-blur-xl
+                sm:p-8
+              "
+            >
+              <div
+                className="
+                  mx-auto
+                  flex
+                  h-12
+                  w-12
+                  items-center
+                  justify-center
+                  rounded-2xl
+                  border
+                  border-cyan-400/20
+                 bg-cyan-400/6
+                  text-xl
+                  text-cyan-300
+                "
+              >
+                <FiCode />
+              </div>
+
+              <p
+                className="
+                  mx-auto
+                  mt-5
+                  max-w-2xl
+                  text-sm
+                  leading-7
+                  text-slate-400
+                  sm:text-base
+                "
+              >
+                I use modern development
+                technologies to build
+                scalable, maintainable,
+                and dependable web
+                applications from
+                development to production.
+              </p>
+
+              <div
+                className="
+                  mx-auto
+                  mt-5
+                  h-px
+                  max-w-xs
+                 bg-linear-to-r
+                  from-transparent
+                  via-cyan-400/30
+                  to-transparent
+                "
+              />
+
+              <p
+                className="
+                  mt-5
+                  text-[10px]
+                  font-black
+                  uppercase
+                  tracking-[0.2em]
+                  text-cyan-300
+                "
+              >
+                Build. Ship. Improve.
+              </p>
+            </motion.div>
+          )}
       </div>
     </section>
   );
 }
-

@@ -1,11 +1,14 @@
 "use client";
 
+import { useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import {
   FaBriefcase,
   FaBuilding,
   FaCalendarAlt,
   FaCheckCircle,
+  FaCopy,
+  FaPhoneAlt,
   FaUserTie,
 } from "react-icons/fa";
 
@@ -13,6 +16,7 @@ type ExperienceItem = {
   id: number;
   jobTitle: string;
   company: string;
+  customerCare: string;
   employmentType: string;
   startDate: string;
   endDate: string;
@@ -25,6 +29,7 @@ const experienceData: ExperienceItem[] = [
     id: 1,
     jobTitle: "Frontend Developer",
     company: "Ionic Corporation",
+    customerCare: "01511142320",
     employmentType: "Full-time · Permanent",
     startDate: "2026",
     endDate: "Present",
@@ -41,6 +46,20 @@ const experienceData: ExperienceItem[] = [
 
 const Experience = () => {
   const reduceMotion = useReducedMotion();
+  const [copiedNumber, setCopiedNumber] = useState<string | null>(null);
+
+  const handleCopyNumber = async (number: string) => {
+    try {
+      await navigator.clipboard.writeText(number);
+      setCopiedNumber(number);
+
+      setTimeout(() => {
+        setCopiedNumber(null);
+      }, 2000);
+    } catch (error) {
+      console.error("Failed to copy customer care number:", error);
+    }
+  };
 
   return (
     <section className="relative w-full overflow-hidden bg-black px-4 py-14 text-white sm:px-6 lg:px-10">
@@ -87,7 +106,13 @@ const Experience = () => {
                 opacity: 1,
                 y: 0,
               }}
-              whileHover={reduceMotion ? undefined : { y: -8 }}
+              whileHover={
+                reduceMotion
+                  ? undefined
+                  : {
+                      y: -8,
+                    }
+              }
               transition={{
                 duration: 0.55,
                 delay: index * 0.15,
@@ -156,6 +181,47 @@ const Experience = () => {
                       </div>
                     </div>
 
+                    {/* Customer Care */}
+                    <div className="flex items-center gap-3">
+                      <FaPhoneAlt className="shrink-0 text-sm text-cyan-400" />
+
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className="text-xs text-gray-600">
+                          Customer Care:
+                        </span>
+
+                        <a
+                          href={`tel:${experience.customerCare}`}
+                          className="text-sm font-medium text-cyan-300 transition-colors duration-300 hover:text-cyan-200"
+                        >
+                          {experience.customerCare}
+                        </a>
+
+                        {/* Copy Button */}
+                        <button
+                          type="button"
+                          onClick={() =>
+                            handleCopyNumber(experience.customerCare)
+                          }
+                          aria-label="Copy customer care number"
+                          title="Copy customer care number"
+                          className="ml-1 inline-flex h-7 w-7 items-center justify-center rounded-lg border border-cyan-400/20 bg-cyan-400/5 text-cyan-300 transition-all duration-300 hover:border-cyan-400/40 hover:bg-cyan-400/10 hover:text-cyan-200 active:scale-95"
+                        >
+                          {copiedNumber === experience.customerCare ? (
+                            <FaCheckCircle className="text-green-400" />
+                          ) : (
+                            <FaCopy />
+                          )}
+                        </button>
+
+                        {copiedNumber === experience.customerCare && (
+                          <span className="text-[10px] font-semibold text-green-400">
+                            Copied!
+                          </span>
+                        )}
+                      </div>
+                    </div>
+
                     {/* Employment */}
                     <div className="flex items-center gap-3">
                       <FaUserTie className="shrink-0 text-sm text-blue-400" />
@@ -210,8 +276,13 @@ const Experience = () => {
                     {experience.description}
                   </p>
 
+                  {/* Focus Areas */}
                   <div className="mt-6 grid gap-3 sm:grid-cols-3">
-                    {["Responsive Interfaces", "Accessible UX", "Clean Architecture"].map((focus) => (
+                    {[
+                      "Responsive Interfaces",
+                      "Accessible UX",
+                      "Clean Architecture",
+                    ].map((focus) => (
                       <div
                         key={focus}
                         className="rounded-2xl border border-white/[0.08] bg-white/[0.035] px-4 py-3 text-center text-xs font-semibold text-slate-300 transition group-hover:border-cyan-400/20 group-hover:text-cyan-200"
@@ -246,5 +317,3 @@ const Experience = () => {
 };
 
 export default Experience;
-
-
