@@ -9,13 +9,13 @@ import ProductivitySection from "@/components/lock/ProductivitySection";
 import FloatingNavigator from "@/components/navigation/FloatingNavigator";
 
 const lockSections = [
-  { label: "Lock Banner", id: "lock-hero" },
+  { label: "Banner", id: "lock-hero" },
   { label: "Skills", id: "lock-skills" },
   { label: "Social", id: "lock-social" },
   { label: "Libraries", id: "libraries" },
   { label: "Certificates", id: "courses" },
   { label: "AI Tools", id: "ai-tools" },
-  { label: "Developer Tools", id: "developer-tools" },
+  { label: " Productivity", id: "developer-tools" },
 ];
 
 export const metadata = createPageMetadata({
