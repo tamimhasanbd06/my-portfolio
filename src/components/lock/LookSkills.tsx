@@ -1,103 +1,147 @@
 "use client";
 
-import type { ReactNode } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { FaJsSquare, FaPython } from "react-icons/fa";
 import { SiNextdotjs, SiTypescript } from "react-icons/si";
 
+import skillsData from "../../../public/look/skills.json";
+
+type SkillIcon =
+  | "javascript"
+  | "typescript"
+  | "nextjs"
+  | "python";
+
 type Skill = {
   name: string;
   full: string;
-  icon: ReactNode;
+  icon: SkillIcon;
 };
 
-const skills: Skill[] = [
-  {
-    name: "JavaScript",
-    full: "JavaScript Programming Language",
-    icon: <FaJsSquare />,
-  },
-  {
-    name: "TypeScript",
-    full: "Type-safe JavaScript at scale",
-    icon: <SiTypescript />,
-  },
-  {
-    name: "Next.js",
-    full: "Production-ready React framework",
-    icon: <SiNextdotjs />,
-  },
-  {
-    name: "Python",
-    full: "Powerful language for modern development",
-    icon: <FaPython />,
-  },
-];
+const getSkillIcon = (icon: SkillIcon) => {
+  switch (icon) {
+    case "javascript":
+      return <FaJsSquare />;
+
+    case "typescript":
+      return <SiTypescript />;
+
+    case "nextjs":
+      return <SiNextdotjs />;
+
+    case "python":
+      return <FaPython />;
+
+    default:
+      return null;
+  }
+};
 
 const LookSkills = () => {
   const reduceMotion = useReducedMotion();
 
+  const skills = skillsData as Skill[];
+
   return (
-    <section id="lock-skills" className="relative min-h-screen w-full overflow-hidden text-white">
+    <section
+      id="lock-skills"
+      className="relative min-h-screen w-full overflow-hidden text-white"
+    >
       {/* Background */}
       <div className="absolute inset-0 bg-gradient-to-br from-black via-[#000814] to-black" />
 
       {/* Glow */}
-      <div className="absolute top-10 sm:top-20 left-5 sm:left-10 w-40 sm:w-72 h-40 sm:h-72 bg-blue-500/20 rounded-full blur-3xl animate-pulse" />
+      <div className="absolute top-10 left-5 h-40 w-40 animate-pulse rounded-full bg-blue-500/20 blur-3xl sm:top-20 sm:left-10 sm:h-72 sm:w-72" />
 
-      <div className="absolute bottom-10 right-5 sm:right-20 w-52 sm:w-96 h-52 sm:h-96 bg-cyan-400/10 rounded-full blur-3xl animate-pulse" />
+      <div className="absolute right-5 bottom-10 h-52 w-52 animate-pulse rounded-full bg-cyan-400/10 blur-3xl sm:right-20 sm:h-96 sm:w-96" />
 
       {/* Content */}
-      <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-10 py-16 sm:py-20 lg:py-24">
+      <div className="relative z-10 mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-20 lg:px-10 lg:py-24">
         {/* Title */}
         <motion.h1
-          initial={{ opacity: 0, y: reduceMotion ? 0 : 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.7 }}
-          className="text-center font-extrabold mb-12 sm:mb-16 text-3xl sm:text-5xl md:text-7xl"
+          initial={{
+            opacity: 0,
+            y: reduceMotion ? 0 : 24,
+          }}
+          whileInView={{
+            opacity: 1,
+            y: 0,
+          }}
+          viewport={{
+            once: true,
+            amount: 0.7,
+          }}
+          className="mb-12 text-center text-3xl font-extrabold sm:mb-16 sm:text-5xl md:text-7xl"
         >
           My <span className="text-cyan-300">Skills</span>
         </motion.h1>
 
         {/* Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 place-items-center">
+        <div className="grid grid-cols-1 place-items-center gap-6 sm:gap-8 md:grid-cols-2 lg:grid-cols-4">
           {skills.map((skill, index) => (
             <motion.div
-              key={index}
-              initial={{ opacity: 0, y: reduceMotion ? 0 : 32, scale: reduceMotion ? 1 : 0.96 }}
-              whileInView={{ opacity: 1, y: 0, scale: 1 }}
-              whileHover={reduceMotion ? undefined : { y: -12, rotateX: 3, scale: 1.035 }}
-              viewport={{ once: true, amount: 0.25 }}
-              transition={{ duration: reduceMotion ? 0 : 0.5, delay: index * 0.07, ease: "easeOut" }}
+              key={skill.name}
+              initial={{
+                opacity: 0,
+                y: reduceMotion ? 0 : 32,
+                scale: reduceMotion ? 1 : 0.96,
+              }}
+              whileInView={{
+                opacity: 1,
+                y: 0,
+                scale: 1,
+              }}
+              whileHover={
+                reduceMotion
+                  ? undefined
+                  : {
+                      y: -12,
+                      rotateX: 3,
+                      scale: 1.035,
+                    }
+              }
+              viewport={{
+                once: true,
+                amount: 0.25,
+              }}
+              transition={{
+                duration: reduceMotion ? 0 : 0.5,
+                delay: index * 0.07,
+                ease: "easeOut",
+              }}
               className="
-                relative w-full max-w-[260px]
-                h-72 sm:h-80 md:h-[340px]
-                flex flex-col items-center justify-center text-center
+                relative flex h-72 w-full max-w-[260px]
+                flex-col items-center justify-center text-center
 
-                rounded-2xl sm:rounded-3xl
-                bg-white/5 backdrop-blur-xl
-                border border-white/10 shadow-2xl
+                rounded-2xl bg-white/5
+                backdrop-blur-xl
+                border border-white/10
+                shadow-2xl
 
                 transition-all duration-300
-                active:scale-95 sm:hover:scale-110
+                active:scale-95
+                sm:h-80 sm:rounded-3xl
+                sm:hover:scale-110
+                md:h-[340px]
+
                 hover:border-cyan-400/40
               "
             >
               {/* Glow */}
-              <div className="absolute -inset-4 sm:-inset-6 bg-blue-500/20 blur-3xl rounded-3xl opacity-70" />
+              <div className="absolute -inset-4 rounded-3xl bg-blue-500/20 blur-3xl opacity-70 sm:-inset-6" />
 
               {/* Icon */}
-              <div className="text-4xl sm:text-5xl md:text-6xl mb-3 sm:mb-5 z-10 text-cyan-300">
-                {skill.icon}
+              <div className="z-10 mb-3 text-4xl text-cyan-300 sm:mb-5 sm:text-5xl md:text-6xl">
+                {getSkillIcon(skill.icon)}
               </div>
 
               {/* Name */}
-              <h2 className="text-xl sm:text-2xl font-bold z-10">
+              <h2 className="z-10 text-xl font-bold sm:text-2xl">
                 {skill.name}
               </h2>
 
               {/* Description */}
-              <p className="text-xs sm:text-sm text-white/60 px-4 mt-2 z-10">
+              <p className="z-10 mt-2 px-4 text-xs text-white/60 sm:text-sm">
                 {skill.full}
               </p>
             </motion.div>
@@ -109,5 +153,4 @@ const LookSkills = () => {
 };
 
 export default LookSkills;
-
 

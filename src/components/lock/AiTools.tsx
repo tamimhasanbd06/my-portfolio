@@ -18,7 +18,7 @@ import {
   FiCpu as FiOpenai,
 } from "react-icons/fi";
 
-import aiData from "../../../public/library/ai-tools-data.json";
+import aiData from "../../../public/look/ai-tools-data.json";
 
 type AiItem = {
   name: string;
